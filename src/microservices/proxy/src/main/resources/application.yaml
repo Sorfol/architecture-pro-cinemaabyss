@@ -1,0 +1,41 @@
+server:
+  port: 8000
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: monolith
+          uri: ${MONOLITH_URL}
+          predicates:
+            - Path=/api/**
+            - name: Weight
+              args:
+                group: migration
+                weight: ${MOVIES_MIGRATION_PERCENT:50}
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: movies-service
+          uri: ${MOVIES_SERVICE_URL}
+          predicates:
+            - Path=/api/movies/**
+            - name: Weight
+              args:
+                group: migration
+                weight: ${100 - ${MOVIES_MIGRATION_PERCENT:50}}
+          filters:
+            - RewritePath=/api/movies/(?<segment>.*), /$\{segment}
+
+        - id: events-service
+          uri: ${EVENTS_SERVICE_URL}
+          predicates:
+            - Path=/api/events/**
+          filters:
+            - RewritePath=/api/events/(?<segment>.*), /$\{segment}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
