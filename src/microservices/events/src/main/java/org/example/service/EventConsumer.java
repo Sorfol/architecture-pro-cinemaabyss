@@ -1,6 +1,6 @@
 package org.example.service;
 
-import com.cinemaabyss.events.model.*;
+import org.example.model.*;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 

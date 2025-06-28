@@ -1,9 +1,13 @@
 package org.example.controller;
 
-import com.cinemaabyss.events.model.*;
-import com.cinemaabyss.events.service.EventProducer;
+
+import org.example.model.*;
+import org.example.service.EventProducer;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/events")
