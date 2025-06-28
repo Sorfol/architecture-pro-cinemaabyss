@@ -15,26 +15,19 @@ services:
       - postgres-data:/var/lib/postgresql/data
       - ./src/database/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d cinemaabyss"]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
       timeout: 5s
-      retries: 10
-      start_period: 10s
+      retries: 5
     networks:
       - cinemaabyss-network
 
-  # ZooKeeper
+  # ZooKeeper for Kafka
   zookeeper:
     image: wurstmeister/zookeeper:latest
     container_name: cinemaabyss-zookeeper
     ports:
       - "2181:2181"
-    healthcheck:
-      test: ["CMD-SHELL", "echo stat | nc localhost 2181 | grep Mode"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
     networks:
       - cinemaabyss-network
 
@@ -64,16 +57,12 @@ services:
       dockerfile: Dockerfile
     container_name: cinemaabyss-monolith
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     ports:
       - "8080:8080"
     environment:
       PORT: 8080
       DB_CONNECTION_STRING: postgres://postgres:postgres_password@postgres:5432/cinemaabyss?sslmode=disable
-      DB_CONNECT_RETRIES: "10"
-      DB_CONNECT_DELAY: "5"
-    restart: unless-stopped
     networks:
       - cinemaabyss-network
 
@@ -84,16 +73,12 @@ services:
       dockerfile: Dockerfile
     container_name: cinemaabyss-movies-service
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     ports:
       - "8081:8081"
     environment:
       PORT: 8081
       DB_CONNECTION_STRING: postgres://postgres:postgres_password@postgres:5432/cinemaabyss?sslmode=disable
-      DB_CONNECT_RETRIES: "10"
-      DB_CONNECT_DELAY: "5"
-    restart: unless-stopped
     networks:
       - cinemaabyss-network
 
@@ -104,18 +89,13 @@ services:
       dockerfile: Dockerfile
     container_name: cinemaabyss-events-service
     depends_on:
-      postgres:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
+      - postgres
+      - kafka
     ports:
       - "8082:8082"
     environment:
       PORT: 8082
       KAFKA_BROKERS: kafka:9092
-      KAFKA_CONNECT_RETRIES: "10"
-      KAFKA_CONNECT_DELAY: "5"
-    restart: unless-stopped
     networks:
       - cinemaabyss-network
 
@@ -126,12 +106,9 @@ services:
       dockerfile: Dockerfile
     container_name: cinemaabyss-proxy-service
     depends_on:
-      monolith:
-        condition: service_healthy
-      movies-service:
-        condition: service_healthy
-      events-service:
-        condition: service_healthy
+      - monolith
+      - movies-service
+      - events-service
     ports:
       - "8000:8000"
     environment:
@@ -141,17 +118,15 @@ services:
       EVENTS_SERVICE_URL: http://events-service:8082
       GRADUAL_MIGRATION: "true"
       MOVIES_MIGRATION_PERCENT: "50"
-    restart: unless-stopped
     networks:
       - cinemaabyss-network
 
-  # Kafka UI
+  # Kafka UI for monitoring Kafka
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: cinemaabyss-kafka-ui
     depends_on:
-      kafka:
-        condition: service_healthy
+      - kafka
     ports:
       - "8090:8080"
     environment:
