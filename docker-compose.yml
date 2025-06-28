@@ -37,7 +37,8 @@ services:
     image: wurstmeister/kafka:2.13-2.7.0
     container_name: cinemaabyss-kafka
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     ports:
       - "9092:9092"
     environment:
@@ -58,12 +59,16 @@ services:
       dockerfile: Dockerfile
     container_name: cinemaabyss-monolith
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
       PORT: 8080
       DB_CONNECTION_STRING: postgres://postgres:postgres_password@postgres:5432/cinemaabyss?sslmode=disable
+      DB_CONNECT_RETRIES: "10"
+      DB_CONNECT_DELAY: "5"
+    restart: unless-stopped
     networks:
       - cinemaabyss-network
 
@@ -74,12 +79,16 @@ services:
       dockerfile: Dockerfile
     container_name: cinemaabyss-movies-service
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "8081:8081"
     environment:
       PORT: 8081
       DB_CONNECTION_STRING: postgres://postgres:postgres_password@postgres:5432/cinemaabyss?sslmode=disable
+      DB_CONNECT_RETRIES: "10"
+      DB_CONNECT_DELAY: "5"
+    restart: unless-stopped
     networks:
       - cinemaabyss-network
 
@@ -90,13 +99,18 @@ services:
       dockerfile: Dockerfile
     container_name: cinemaabyss-events-service
     depends_on:
-      - postgres
-      - kafka
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
     ports:
       - "8082:8082"
     environment:
       PORT: 8082
       KAFKA_BROKERS: kafka:9092
+      KAFKA_CONNECT_RETRIES: "10"
+      KAFKA_CONNECT_DELAY: "5"
+    restart: unless-stopped
     networks:
       - cinemaabyss-network
 
@@ -107,9 +121,12 @@ services:
       dockerfile: Dockerfile
     container_name: cinemaabyss-proxy-service
     depends_on:
-      - monolith
-      - movies-service
-      - events-service
+      monolith:
+        condition: service_healthy
+      movies-service:
+        condition: service_healthy
+      events-service:
+        condition: service_healthy
     ports:
       - "8000:8000"
     environment:
@@ -119,6 +136,7 @@ services:
       EVENTS_SERVICE_URL: http://events-service:8082
       GRADUAL_MIGRATION: "true"
       MOVIES_MIGRATION_PERCENT: "50"
+    restart: unless-stopped
     networks:
       - cinemaabyss-network
 
@@ -127,7 +145,8 @@ services:
     image: provectuslabs/kafka-ui:latest
     container_name: cinemaabyss-kafka-ui
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     ports:
       - "8090:8080"
     environment:
