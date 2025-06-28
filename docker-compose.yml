@@ -43,8 +43,7 @@ services:
     image: wurstmeister/kafka:2.13-2.7.0
     container_name: cinemaabyss-kafka
     depends_on:
-      zookeeper:
-        condition: service_healthy
+      - zookeeper
     ports:
       - "9092:9092"
     environment:
@@ -53,12 +52,8 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "movie-events:1:1,user-events:1:1,payment-events:1:1"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-      KAFKA_HEAP_OPTS: "-Xmx512M -Xms256M"
-      KAFKA_STARTUP_TIMEOUT: "120"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    healthcheck:
-      disable: true
     networks:
       - cinemaabyss-network
 
