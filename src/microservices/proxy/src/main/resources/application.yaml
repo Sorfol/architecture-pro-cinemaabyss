@@ -8,29 +8,29 @@ spring:
         webflux:
           routes:
             - id: monolith
-              uri: http://localhost:8080
+              uri: ${MONOLITH_URL:http://localhost:8080}
               predicates:
                 - Path=/api/**
                 - name: Weight
                   args:
-                    group: migration
-                    weight: 50
+                    group: movies-migration
+                    weight: ${MOVIES_MIGRATION_PERCENT:50}
               filters:
                 - RewritePath=/api/(?<segment>.*), /$\{segment}
 
             - id: movies-service
-              uri: http://localhost:8081
+              uri: ${MOVIES_SERVICE_URL:http://localhost:8081}
               predicates:
                 - Path=/api/movies/**
                 - name: Weight
                   args:
-                    group: migration
-                    weight: 50
+                    group: movies-migration
+                    weight: ${100 - ${MOVIES_MIGRATION_PERCENT:50}}
               filters:
                 - RewritePath=/api/movies/(?<segment>.*), /$\{segment}
 
             - id: events-service
-              uri: http://localhost:8082
+              uri: ${EVENTS_SERVICE_URL:http://localhost:8082}
               predicates:
                 - Path=/api/events/**
               filters:
