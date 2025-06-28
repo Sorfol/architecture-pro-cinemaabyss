@@ -54,15 +54,15 @@ services:
       KAFKA_CREATE_TOPICS: "movie-events:1:1,user-events:1:1,payment-events:1:1"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_HEAP_OPTS: "-Xmx512M -Xms256M"
-      KAFKA_STARTUP_TIMEOUT: "60"
+      KAFKA_STARTUP_TIMEOUT: "120"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:
-      test: [ "CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list || exit 1" ]
-      interval: 10s
-      timeout: 15s
+      test: [ "CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092 || exit 1" ]
+      interval: 15s
+      timeout: 20s
       retries: 10
-      start_period: 45s
+      start_period: 60s
     networks:
       - cinemaabyss-network
 
