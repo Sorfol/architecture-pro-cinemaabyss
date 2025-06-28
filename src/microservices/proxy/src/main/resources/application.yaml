@@ -18,7 +18,7 @@ spring:
               uri: ${MOVIES_SERVICE_URL:http://localhost:8081}
               predicates:
                 - Path=/api/movies/**
-                - Weight=movies-migration, ${100 - ${MOVIES_MIGRATION_PERCENT:50}}
+                - Weight=movies-migration
               filters:
                 - RewritePath=/api/movies/(?<segment>.*), /$\{segment}
 
