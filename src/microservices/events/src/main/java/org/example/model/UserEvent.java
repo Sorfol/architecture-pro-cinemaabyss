@@ -2,9 +2,12 @@ package org.example.model;
 
 import lombok.Data;
 
+import java.time.Instant;
+
 @Data
 public class UserEvent {
-    private String userId;
-    private String action; // "login", "logout", "register"
-    private String device;
+    private Long userId;
+    private String username;
+    private String action;  // "logged_in", "registered", etc.
+    private Instant timestamp;
 }

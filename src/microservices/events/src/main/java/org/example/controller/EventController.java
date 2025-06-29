@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/events")
 public class EventController {
@@ -20,20 +22,20 @@ public class EventController {
     }
 
     @PostMapping("/movie")
-    public ResponseEntity<EventResponse> createMovieEvent(@RequestBody MovieEvent event) {
+    public ResponseEntity<Map<String, String>> createMovieEvent(@RequestBody MovieEvent event) {
         eventProducer.sendMovieEvent(event);
-        return ResponseEntity.ok(new EventResponse("Movie event created"));
+        return ResponseEntity.status(201).body(Map.of("status", "success"));
     }
 
     @PostMapping("/user")
-    public ResponseEntity<EventResponse> createUserEvent(@RequestBody UserEvent event) {
+    public ResponseEntity<Map<String, String>> createUserEvent(@RequestBody UserEvent event) {
         eventProducer.sendUserEvent(event);
-        return ResponseEntity.ok(new EventResponse("User event created"));
+        return ResponseEntity.status(201).body(Map.of("status", "success"));
     }
 
     @PostMapping("/payment")
-    public ResponseEntity<EventResponse> createPaymentEvent(@RequestBody PaymentEvent event) {
+    public ResponseEntity<Map<String, String>> createPaymentEvent(@RequestBody PaymentEvent event) {
         eventProducer.sendPaymentEvent(event);
-        return ResponseEntity.ok(new EventResponse("Payment event created"));
+        return ResponseEntity.status(201).body(Map.of("status", "success"));
     }
 }
