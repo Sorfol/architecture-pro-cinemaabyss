@@ -1,15 +1,27 @@
 package org.example.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.time.Instant;
 
 @Data
 public class PaymentEvent {
+    @JsonProperty("payment_id")
     private Long paymentId;
+
+    @JsonProperty("user_id")
     private Long userId;
+
+    @JsonProperty
     private Double amount;
-    private String status;  // "completed", "failed", etc.
+
+    @JsonProperty
+    private String status;
+
+    @JsonProperty
     private Instant timestamp;
-    private String methodType;  // "credit_card", "paypal", etc.
+
+    @JsonProperty("method_type")
+    private String methodType;
 }

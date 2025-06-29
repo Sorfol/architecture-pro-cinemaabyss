@@ -4,10 +4,7 @@ package org.example.controller;
 import org.example.model.*;
 import org.example.service.EventProducer;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -19,6 +16,11 @@ public class EventController {
 
     public EventController(EventProducer eventProducer) {
         this.eventProducer = eventProducer;
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<Map<String, String>> healthCheck() {
+        return ResponseEntity.ok(Map.of("status", "ok"));
     }
 
     @PostMapping("/movie")
