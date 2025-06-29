@@ -19,3 +19,15 @@ logging:
   level:
     org.springframework.kafka: INFO
     com.cinemaabyss.events: DEBUG
+
+management:
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
