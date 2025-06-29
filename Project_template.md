@@ -122,7 +122,7 @@ jobs:
  spec:
       containers:
       - name: events-service
-        image: ghcr.io/ваш логин/имя репозитория/events-service:latest
+        image: ghcr.io/Sorfol/имя репозитория/events-service:latest
 ```
 3. Добавьте в секрет src/kubernetes/dockerconfigsecret.yaml в поле
 ```bash
