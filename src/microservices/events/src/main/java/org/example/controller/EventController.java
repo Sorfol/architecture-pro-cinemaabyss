@@ -1,43 +1,45 @@
 package org.example.controller;
 
 
+import lombok.RequiredArgsConstructor;
 import org.example.model.*;
-import org.example.service.EventProducer;
-import org.springframework.http.ResponseEntity;
+import org.example.service.EventProducerService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/events")
 public class EventController {
 
-    private final EventProducer eventProducer;
+    private final EventProducerService eventProducerService;
 
-    public EventController(EventProducer eventProducer) {
-        this.eventProducer = eventProducer;
+    public EventController(EventProducerService eventProducerService) {
+        this.eventProducerService = eventProducerService;
     }
 
     @GetMapping("/health")
-    public ResponseEntity<Map<String, String>> healthCheck() {
-        return ResponseEntity.ok(Map.of("status", "ok"));
+    public String checkHealth() {
+        return "Events service is up and running!";
     }
 
+    // Обработчик запросов для создания события фильма
     @PostMapping("/movie")
-    public ResponseEntity<Map<String, String>> createMovieEvent(@RequestBody MovieEvent event) {
-        eventProducer.sendMovieEvent(event);
-        return ResponseEntity.status(201).body(Map.of("status", "success"));
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createMovieEvent(@RequestBody MovieEvent movieEvent) {
+        eventProducerService.sendMessage("movie-event-topic", movieEvent);
     }
 
+    // Обработчик запросов для создания события пользователя
     @PostMapping("/user")
-    public ResponseEntity<Map<String, String>> createUserEvent(@RequestBody UserEvent event) {
-        eventProducer.sendUserEvent(event);
-        return ResponseEntity.status(201).body(Map.of("status", "success"));
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createUserEvent(@RequestBody UserEvent userEvent) {
+        eventProducerService.sendMessage("user-event-topic", userEvent);
     }
 
+    // Обработчик запросов для создания события платежа
     @PostMapping("/payment")
-    public ResponseEntity<Map<String, String>> createPaymentEvent(@RequestBody PaymentEvent event) {
-        eventProducer.sendPaymentEvent(event);
-        return ResponseEntity.status(201).body(Map.of("status", "success"));
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createPaymentEvent(@RequestBody PaymentEvent paymentEvent) {
+        eventProducerService.sendMessage("payment-event-topic", paymentEvent);
     }
 }

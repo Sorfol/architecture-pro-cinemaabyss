@@ -5,29 +5,18 @@ spring:
   kafka:
     bootstrap-servers: kafka:9092
     consumer:
-      group-id: events-group
+      group-id: event-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "com.cinemaabyss.events.model"
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      retries: 3
+    template:
+      default-topic: movie-event-topic,user-event-topic,payment-event-topic
 
 logging:
   level:
-    org.springframework.kafka: INFO
-    com.cinemaabyss.events: DEBUG
-
-management:
-  endpoints:
-    web:
-      base-path: /
-      exposure:
-        include: health,info
-  endpoint:
-    health:
-      show-details: always
-      probes:
-        enabled: true
+    root: INFO
+    org.springframework.kafka: DEBUG
