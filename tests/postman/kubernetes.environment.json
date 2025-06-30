@@ -1,28 +1,34 @@
 {
-  "id": "local-env",
-  "name": "Local Environment",
+  "id": "kubernetes-env",
+  "name": "Kubernetes Environment",
   "values": [
     {
       "key": "baseUrl",
-      "value": "http://cinemaabyss.example.com",
+      "value": "http://192.168.49.2",
       "type": "default",
       "enabled": true
     },
     {
-      "key": "moviesServiceUrl",
-      "value": "http://cinemaabyss.example.com",
+      "key": "hostHeader",
+      "value": "cinemaabyss.example.com",
       "type": "default",
       "enabled": true
     },
     {
-      "key": "eventsServiceUrl",
-      "value": "http://cinemaabyss.example.com",
+      "key": "moviesPath",
+      "value": "/api/movies",
       "type": "default",
       "enabled": true
     },
     {
-      "key": "proxyServiceUrl",
-      "value": "http://cinemaabyss.example.com",
+      "key": "usersPath",
+      "value": "/api/users",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "eventsPath",
+      "value": "/api/events",
       "type": "default",
       "enabled": true
     }
