@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: events-service
-          image: ghcr.io/sorfol/architecture-pro-cinemaabyss/events-service:latest
+          image: ghcr.io/db-exp/cinemaabysstest/events-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8082
@@ -38,8 +38,8 @@ spec:
                 name: cinemaabyss-secrets
           resources:
             limits:
-              cpu: "500m"
-              memory: "512Mi"
+              cpu: "300m"
+              memory: "256Mi"
             requests:
               cpu: "100m"
               memory: "128Mi"
@@ -55,6 +55,7 @@ spec:
               port: 8082
             initialDelaySeconds: 15
             periodSeconds: 20
+      restartPolicy: Always
       imagePullSecrets:
         - name: dockerconfigjson
 ---

@@ -22,15 +22,13 @@ spec:
     spec:
       containers:
         - name: proxy-service
-          image: ghcr.io/sorfol/architecture-pro-cinemaabyss/proxy-service:latest
+          image: ghcr.io/db-exp/cinemaabysstest/proxy-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
           env:
             - name: PORT
               value: "8000"
-            - name: UPSTREAM_SERVICES
-              value: "monolith:8080,events-service:8082,movies-service:8081"
             - name: MONOLITH_URL
               value: "http://monolith:8080"
             - name: MOVIES_SERVICE_URL
@@ -44,10 +42,12 @@ spec:
           envFrom:
             - configMapRef:
                 name: cinemaabyss-config
+            - secretRef:
+                name: cinemaabyss-secrets
           resources:
             limits:
-              cpu: "500m"
-              memory: "512Mi"
+              cpu: "300m"
+              memory: "256Mi"
             requests:
               cpu: "100m"
               memory: "128Mi"
@@ -63,6 +63,7 @@ spec:
               port: 8000
             initialDelaySeconds: 15
             periodSeconds: 20
+      restartPolicy: Always
       imagePullSecrets:
         - name: dockerconfigjson
 ---

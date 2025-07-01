@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: movies-service
-          image: ghcr.io/sorfol/architecture-pro-cinemaabyss/movies-service:latest
+          image: ghcr.io/db-exp/cinemaabysstest/movies-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
@@ -47,16 +47,14 @@ spec:
             httpGet:
               path: /api/movies/health
               port: 8081
-            initialDelaySeconds: 15
+            initialDelaySeconds: 5
             periodSeconds: 10
-            timeoutSeconds: 5
           livenessProbe:
             httpGet:
               path: /api/movies/health
               port: 8081
-            initialDelaySeconds: 30
+            initialDelaySeconds: 15
             periodSeconds: 20
-            timeoutSeconds: 5
       restartPolicy: Always
       imagePullSecrets:
         - name: dockerconfigjson
@@ -70,8 +68,6 @@ spec:
   selector:
     app: movies-service
   ports:
-    - name: http
-      port: 8081
+    - port: 8081
       targetPort: 8081
-      protocol: TCP
-  type: NodePort
+  type: ClusterIP

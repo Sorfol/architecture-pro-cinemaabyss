@@ -1,34 +1,28 @@
 {
-  "id": "kubernetes-env",
-  "name": "Kubernetes Environment",
+  "id": "docker-env",
+  "name": "Docker Environment",
   "values": [
     {
       "key": "baseUrl",
-      "value": "http://192.168.49.2",
+      "value": "http://monolith:8080",
       "type": "default",
       "enabled": true
     },
     {
-      "key": "moviesServicePath",
-      "value": "/api/movies",
+      "key": "moviesServiceUrl",
+      "value": "http://movies-service:8081",
       "type": "default",
       "enabled": true
     },
     {
-      "key": "monolithPath",
-      "value": "/api/monolith",
+      "key": "eventsServiceUrl",
+      "value": "http://events-service:8082",
       "type": "default",
       "enabled": true
     },
     {
-      "key": "eventsPath",
-      "value": "/api/events",
-      "type": "default",
-      "enabled": true
-    },
-    {
-      "key": "hostHeader",
-      "value": "cinemaabyss.example.com",
+      "key": "proxyServiceUrl",
+      "value": "http://proxy-service:8000",
       "type": "default",
       "enabled": true
     }
