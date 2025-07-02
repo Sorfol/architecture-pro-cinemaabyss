@@ -14,7 +14,6 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "*"
         spring.json.value.default.type: java.util.LinkedHashMap
 
     producer:
@@ -29,10 +28,13 @@ spring:
       missing-topics-fatal: false
 
     template:
-      default-topic: default-events-topic
+      default-topic: movie-events
 
 logging:
   level:
     root: INFO
-    org.springframework.kafka: DEBUG
+    org.example: DEBUG
+    org.springframework.kafka: INFO
     org.apache.kafka: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"
