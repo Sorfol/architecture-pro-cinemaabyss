@@ -5,36 +5,39 @@ spring:
   kafka:
     bootstrap-servers: kafka:9092
     properties:
-      spring.json.trusted.packages: "*"
+      # Отключаем все Spring-специфичные сериализаторы
+      spring.json.add.type.headers: false
       spring.json.use.type.headers: false
 
+    # Конфигурация продюсера (отправка сообщений)
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      retries: 3
+      acks: "1"
+      properties:
+        # Используем стандартный сериализатор строк
+        value.serializer: org.apache.kafka.common.serialization.StringSerializer
+
+    # Конфигурация консьюмера (получение сообщений)
     consumer:
       group-id: event-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.value.default.type: java.util.LinkedHashMap
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: true
 
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      retries: 3
-      acks: "1"
-      properties:
-        spring.json.add.type.headers: false
-
+    # Отключаем проверку топиков при старте
     listener:
       missing-topics-fatal: false
 
+    # Указываем топики из вашего кластера
     template:
       default-topic: movie-events
 
 logging:
   level:
     root: INFO
-    org.example: DEBUG
-    org.springframework.kafka: INFO
+    org.springframework.kafka: DEBUG
     org.apache.kafka: WARN
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"
+    org.example: DEBUG
