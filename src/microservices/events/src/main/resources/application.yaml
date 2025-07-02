@@ -5,21 +5,17 @@ spring:
   kafka:
     bootstrap-servers: kafka:9092
     properties:
-      # Отключаем все Spring-специфичные сериализаторы
       spring.json.add.type.headers: false
       spring.json.use.type.headers: false
 
-    # Конфигурация продюсера (отправка сообщений)
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
       retries: 3
       acks: "1"
       properties:
-        # Используем стандартный сериализатор строк
         value.serializer: org.apache.kafka.common.serialization.StringSerializer
 
-    # Конфигурация консьюмера (получение сообщений)
     consumer:
       group-id: event-group
       auto-offset-reset: earliest
@@ -27,11 +23,9 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       enable-auto-commit: true
 
-    # Отключаем проверку топиков при старте
     listener:
       missing-topics-fatal: false
 
-    # Указываем топики из вашего кластера
     template:
       default-topic: movie-events
 
@@ -41,3 +35,15 @@ logging:
     org.springframework.kafka: DEBUG
     org.apache.kafka: WARN
     org.example: DEBUG
+
+management:
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
