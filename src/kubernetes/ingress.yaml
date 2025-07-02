@@ -11,7 +11,7 @@ spec:
     - host: cinemaabyss.example.com
       http:
         paths:
-          - path: /api/movies
+          - path: /
             pathType: Prefix
             backend:
               service:
