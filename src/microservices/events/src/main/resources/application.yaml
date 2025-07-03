@@ -4,28 +4,27 @@ server:
 spring:
   kafka:
     bootstrap-servers: kafka:9092
-    properties:
-      spring.json.add.type.headers: false
-      spring.json.use.type.headers: false
-
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerialize
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       retries: 3
       acks: "1"
-
     consumer:
       group-id: event-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       enable-auto-commit: true
-
+      properties:
+        spring.json.trusted.packages: "org.example.model"
+        spring.json.value.default.type: "org.example.model.PaymentEvent"
     listener:
       missing-topics-fatal: false
-
     template:
       default-topic: movie-events
+    properties:
+      spring.json.add.type.headers: false
+      spring.json.use.type.headers: false
 
 logging:
   level:

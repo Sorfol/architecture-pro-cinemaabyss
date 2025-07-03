@@ -1,5 +1,6 @@
 package org.example.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -14,10 +15,11 @@ public class EventProducerService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public <T> void sendMessage(String topicName, T message) {
+    public <T> void sendMessage(String topic, Object message) {
         try {
-            kafkaTemplate.send(topicName, message); // Просто отправляем объект
-            logger.info("Отправлено сообщение в тему {}: {}", topicName, message);
+            String json = new ObjectMapper().writeValueAsString(message);
+            kafkaTemplate.send(topic, json);
+            logger.info("Отправлено сообщение в тему {}: {}", topic, message);
         } catch (Exception e) {
             logger.error("Ошибка отправки сообщения:", e);
             throw new RuntimeException("Failed to send message to Kafka", e);
