@@ -26,7 +26,6 @@ public class EventController {
         return ResponseEntity.ok(response);
     }
 
-    // Обработчик запросов для создания события фильма
     @PostMapping("/movie")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Map<String, String>> createMovieEvent(@RequestBody MovieEvent movieEvent) {
@@ -36,23 +35,21 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // Обработчик запросов для создания события пользователя
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Map<String, String>> createUserEvent(@RequestBody UserEvent userEvent) {
         eventProducerService.sendMessage("user-event-topic", userEvent);
         Map<String, String> response = new HashMap<>();
-        response.put("status", "success"); // Сообщение обработано успешно
+        response.put("status", "success");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // Обработчик запросов для создания события платежа
     @PostMapping("/payment")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Map<String, String>> createPaymentEvent(@RequestBody PaymentEvent paymentEvent) {
         eventProducerService.sendMessage("payment-event-topic", paymentEvent);
         Map<String, String> response = new HashMap<>();
-        response.put("status", "success"); // Сообщение обработано успешно
+        response.put("status", "success");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
