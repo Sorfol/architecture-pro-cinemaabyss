@@ -15,4 +15,5 @@ public class PaymentEvent {
         this.paymentId = paymentId;
         this.amount = amount;
     }
+
 }
