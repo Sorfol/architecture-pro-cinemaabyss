@@ -23,11 +23,11 @@ public class EventProducerService {
 
     public <T> void sendMessage(String topicName, T message) {
         try {
-            ProducerRecord<String, T> record = new ProducerRecord<>(topicName, null, message);
-            kafkaTemplate.send((ProducerRecord<String, Object>) record);
-            logger.info("Отправлено сообщение в тему {}: {}", topicName, message.toString());
+            kafkaTemplate.send(topicName, message.toString());
+            logger.info("Отправлено сообщение в тему {}: {}", topicName, message);
         } catch (Exception e) {
             logger.error("Ошибка отправки сообщения:", e);
+            throw new RuntimeException("Failed to send message", e);
         }
     }
 }
