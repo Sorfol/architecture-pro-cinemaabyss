@@ -17,16 +17,13 @@ spring:
           paymentEvent:org.example.model.PaymentEvent,
           userEvent:org.example.model.UserEvent
     consumer:
-      group-id: event-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       properties:
-        spring.json.trusted.packages:
-        spring.json.type.mapping: |
-          paymentEvent:org.example.model.PaymentEvent,
-          movieEvent:org.example.model.MovieEvent,
-          userEvent:org.example.model.UserEvent
+        spring.json.value.default.type: org.example.model.MovieEvent
+        spring.deserializer.key.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: "*"
     properties:
       spring.json.use.type.headers: false
     template:
