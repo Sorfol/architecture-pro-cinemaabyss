@@ -9,28 +9,30 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       retries: 3
       acks: "1"
+      properties:
+        spring.json.add.type.headers: false
+        spring.json.value.default.type: org.example.model.PaymentEvent
     consumer:
       group-id: event-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      enable-auto-commit: true
       properties:
-        spring.json.trusted.packages: "org.example.model"
-        spring.json.value.default.type: "org.example.model.PaymentEvent"
-    listener:
-      missing-topics-fatal: false
+        spring.json.trusted.packages:
+        spring.json.type.mapping: |
+          paymentEvent:org.example.model.PaymentEvent,
+          movieEvent:org.example.model.MovieEvent,
+          userEvent:org.example.model.UserEvent
+    properties:
+      spring.json.use.type.headers: false
     template:
       default-topic: movie-events
-    properties:
-      spring.json.add.type.headers: false
-      spring.json.use.type.headers: false
-
+    listener:
+      missing-topics-fatal: false
 logging:
   level:
     root: INFO
     org.springframework.kafka: DEBUG
-    org.apache.kafka: WARN
     org.example: DEBUG
 
 management:
