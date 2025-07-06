@@ -16,9 +16,7 @@ public class EventProducerService {
     public void sendMessage(String topic, Object message) {
         try {
             kafkaTemplate.send(topic, message);
-            log.info("Sent message to {}: {}", topic, message);
         } catch (Exception e) {
-            log.error("Error sending message to topic {}: {}", topic, e.getMessage());
             throw new RuntimeException("Failed to send message to Kafka", e);
         }
     }

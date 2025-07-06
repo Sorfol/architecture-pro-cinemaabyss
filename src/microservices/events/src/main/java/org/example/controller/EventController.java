@@ -1,12 +1,12 @@
 package org.example.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import org.example.model.*;
 import org.example.service.EventProducerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +15,10 @@ import java.util.Map;
 public class EventController {
 
     private final EventProducerService eventProducerService;
+
+    public EventController(EventProducerService eventProducerService) {
+        this.eventProducerService = eventProducerService;
+    }
 
     @GetMapping("/health")
     public ResponseEntity<Map<String, Object>> healthCheck() {
