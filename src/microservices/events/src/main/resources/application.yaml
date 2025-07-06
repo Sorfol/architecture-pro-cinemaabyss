@@ -10,7 +10,7 @@ spring:
       retries: 3
       acks: "1"
       properties:
-        spring.json.add.type.headers: false
+        spring.json.add.type.headers: true
         spring.json.value.default.type: org.example.model.PaymentEvent
         spring.json.type.mapping: |
           movieEvent:org.example.model.MovieEvent,
@@ -19,17 +19,24 @@ spring:
     consumer:
       key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      auto-offset-reset: earliest
       properties:
-        spring.json.value.default.type: org.example.model.MovieEvent
         spring.deserializer.key.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
         spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
-        spring.json.trusted.packages: "*"
-    properties:
-      spring.json.use.type.headers: false
-    template:
-      default-topic: movie-events
+        spring.json.value.default.type: org.example.model.MovieEvent
+        spring.json.trusted.packages: "org.example.model,*"
+        spring.json.use.type.headers: true
+        spring.json.type.mapping: |
+          movieEvent:org.example.model.MovieEvent,
+          paymentEvent:org.example.model.PaymentEvent,
+          userEvent:org.example.model.UserEvent
     listener:
       missing-topics-fatal: false
+      type: batch
+      ack-mode: manual_immediate
+    template:
+      default-topic: movie-events
+
 logging:
   level:
     root: INFO
