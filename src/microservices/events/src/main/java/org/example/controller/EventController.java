@@ -11,50 +11,38 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@Slf4j
 @RequestMapping("/api/events")
 public class EventController {
 
     private final EventProducerService eventProducerService;
 
-    public EventController(EventProducerService eventProducerService) {
-        this.eventProducerService = eventProducerService;
-    }
-
     @GetMapping("/health")
-    public ResponseEntity<Map<String, Boolean>> checkHealth() {
-        Map<String, Boolean> response = new HashMap<>();
+    public ResponseEntity<Map<String, Object>> healthCheck() {
+        Map<String, Object> response = new HashMap<>();
         response.put("status", true);
+        response.put("service", "Events Microservice");
+        response.put("timestamp", Instant.now().toString());
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/movie")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Map<String, String>> createMovieEvent(@RequestBody MovieEvent movieEvent) {
-        log.info("Received movie event: {}", movieEvent);
-        eventProducerService.sendMessage("movie-event-topic", movieEvent);
-        Map<String, String> response = new HashMap<>();
-        response.put("status", "success");
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<Map<String, String>> createMovieEvent(@RequestBody MovieEvent event) {
+        eventProducerService.sendMessage("movie-events", event);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(Map.of("status", "success"));
     }
 
     @PostMapping("/user")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Map<String, String>> createUserEvent(@RequestBody UserEvent userEvent) {
-        log.info("Received user event: {}", userEvent);
-        eventProducerService.sendMessage("user-event-topic", userEvent);
-        Map<String, String> response = new HashMap<>();
-        response.put("status", "success");
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<Map<String, String>> createUserEvent(@RequestBody UserEvent event) {
+        eventProducerService.sendMessage("user-events", event);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(Map.of("status", "success"));
     }
 
     @PostMapping("/payment")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Map<String, String>> createPaymentEvent(@RequestBody PaymentEvent paymentEvent) {
-        log.info("Received payment event: {}", paymentEvent);
-        eventProducerService.sendMessage("payment-event-topic", paymentEvent);
-        Map<String, String> response = new HashMap<>();
-        response.put("status", "success");
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<Map<String, String>> createPaymentEvent(@RequestBody PaymentEvent event) {
+        eventProducerService.sendMessage("payment-events", event);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(Map.of("status", "success"));
     }
 }

@@ -9,11 +9,22 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class PaymentEvent {
-    @JsonProperty("paymentId")
-    private String paymentId;
+    @JsonProperty("payment_id")
+    private Long paymentId;
+
+    @JsonProperty("user_id")
+    private Long userId;
 
     @JsonProperty("amount")
-    private String amount;
+    private Double amount;
+
+    @JsonProperty("status")
+    private String status;
+
+    @JsonProperty("timestamp")
+    private String timestamp;
+
+    @JsonProperty("method_type")
+    private String methodType;
 }

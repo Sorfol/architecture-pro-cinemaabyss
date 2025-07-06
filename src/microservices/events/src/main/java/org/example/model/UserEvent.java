@@ -9,14 +9,16 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class UserEvent {
-    @JsonProperty("userId")
-    private String userId;
+    @JsonProperty("user_id")
+    private Long userId;
 
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("username")
+    private String username;
 
-    @JsonProperty("email")
-    private String email;
+    @JsonProperty("action")
+    private String action;
+
+    @JsonProperty("timestamp")
+    private String timestamp;
 }
