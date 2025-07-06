@@ -1,0 +1,47 @@
+server:
+  port: 8082
+
+spring:
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: true
+        spring.json.type.mapping: |
+          movieEvent:org.example.model.MovieEvent,
+          paymentEvent:org.example.model.PaymentEvent,
+          userEvent:org.example.model.UserEvent
+    consumer:
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: "org.example.model"
+        spring.json.use.type.headers: true
+    listener:
+      filter:
+        type: org.springframework.kafka.listener.CommonLoggingErrorHandler
+      type: single
+      ack-mode: manual_immediate
+      common-error-handler: org.springframework.kafka.listener.CommonLoggingErrorHandler
+
+logging:
+  level:
+    root: INFO
+    org.springframework.kafka: DEBUG
+    org.example: DEBUG
+
+management:
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true

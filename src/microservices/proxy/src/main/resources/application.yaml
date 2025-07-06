@@ -1,0 +1,50 @@
+server:
+  port: 8000
+
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: monolith-movies
+              uri: ${MONOLITH_URL:http://localhost:8080}
+              predicates:
+                - Path=/api/movies/**
+                - Weight=movies-migration, ${MOVIES_MIGRATION_PERCENT:50}
+              filters:
+                - RewritePath=/api/movies/(?<segment>.*), /api/movies/$\{segment}
+
+            - id: movies-service
+              uri: ${MOVIES_SERVICE_URL:http://localhost:8081}
+              predicates:
+                - Path=/api/movies/**
+                - Weight=movies-migration
+              filters:
+                - RewritePath=/api/movies/(?<segment>.*), /$\{segment}
+
+            - id: users-service
+              uri: ${MONOLITH_URL:http://localhost:8080}
+              predicates:
+                - Path=/api/users/**
+              filters:
+                - RewritePath=/api/users/(?<segment>.*), /api/users/$\{segment}
+
+            - id: events-service
+              uri: ${EVENTS_SERVICE_URL:http://localhost:8082}
+              predicates:
+                - Path=/api/events/**
+              filters:
+                - RewritePath=/api/events/(?<segment>.*), /$\{segment}
+
+management:
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true

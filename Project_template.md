@@ -5,7 +5,7 @@
 1. Спроектируйте to be архитектуру КиноБездны, разделив всю систему на отдельные домены и организовав интеграционное взаимодействие и единую точку вызова сервисов.
 Результат представьте в виде контейнерной диаграммы в нотации С4.
 Добавьте ссылку на файл в этот шаблон
-[ссылка на файл](ссылка)
+[ссылка на файл](diagrams/containers/cinema_to_be_containers.puml)
 
 
 ## Задание 2
@@ -57,8 +57,9 @@
     - Добавьте в docker-compose новый сервис, kafka там уже есть
 
 Необходимые тесты для проверки этого API вызываются при запуске npm run test:local из папки tests/postman 
-Приложите скриншот тестов и скриншот состояния топиков Kafka http://localhost:8090 
-
+Приложите скриншот тестов и скриншот состояния топиков Kafka http://localhost:8090
+[ссылка тесты](report/2.tests.jpg)
+[ссылка на топики](report/2.topics.png)
 
 ## Задание 3
 
@@ -121,7 +122,7 @@ jobs:
  spec:
       containers:
       - name: events-service
-        image: ghcr.io/ваш логин/имя репозитория/events-service:latest
+        image: ghcr.io/Sorfol/имя репозитория/events-service:latest
 ```
 3. Добавьте в секрет src/kubernetes/dockerconfigsecret.yaml в поле
 ```bash
@@ -271,6 +272,9 @@ cat .docker/config.json | base64
   Часть тестов с health-чек упадет, но создание событий отработает.
   Откройте логи event-service и сделайте скриншот обработки событий
 
+[ссылка на movie](report/3.api_movie.jpg)
+[ссылка на логи event-service](report/3.event-service.jpg)
+
 #### Шаг 3
 Добавьте сюда скриншота вывода при вызове https://cinemaabyss.example.com/api/movies и  скриншот вывода event-service после вызова тестов.
 
@@ -349,6 +353,9 @@ minikube tunnel
 https://cinemaabyss.example.com/api/movies
 и приложите скриншот развертывания helm и вывода https://cinemaabyss.example.com/api/movies
 
+[ссылка на movie](report/4.api.jpg)
+[ссылка на helm](report/4.helm.jpg)
+
 
 # Задание 5
 Компания планирует активно развиваться и для повышения надежности, безопасности, реализации сетевых паттернов типа Circuit Breaker и канареечного деплоя вам как архитектору необходимо развернуть istio и настроить circuit breaker для monolith и movies сервисов.
@@ -414,6 +421,8 @@ You can see 21 for the upstream_rq_pending_overflow value which means 21 calls s
 ```
 
 Приложите скриншот работы circuit breaker'а
+
+[ссылка на тесты](report/5.circuit_breaker.jpg)
 
 Удаляем все
 ```bash

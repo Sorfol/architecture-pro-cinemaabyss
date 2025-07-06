@@ -1,0 +1,55 @@
+@startuml Кинобездна: Целевая архитектура (Strangler Fig)
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+System(web, "Веб-клиент (React)")
+System(mobile, "Мобильное приложение")
+System(tv, "Smart TV")
+
+Container_Boundary(monolith, "Монолит (Старая система)") {
+    ComponentDb(legacy_db, "PostgreSQL", "База данных", "Хранит: пользователи, платежи, контент")
+    Component(legacy_app, "Go-приложение", "Монолит", "Обрабатывает все запросы")
+}
+
+Container_Boundary(new_system, "Новая система (Kubernetes)") {
+    Component(api_gateway, "API Gateway", "Kong", "Единая точка входа")
+
+    Container_Boundary(auth_domain, "Домен: Аутентификация") {
+        Component(auth_service, "Auth Service", "Java", "JWT, OAuth 2.0")
+        ComponentDb(auth_db, "Auth DB", "PostgreSQL")
+    }
+
+    Container_Boundary(billing_domain, "Домен: Платежи") {
+        Component(billing_service, "Billing Service", "Java", "Подписки, скидки")
+        ComponentDb(billing_db, "Billing DB", "PostgreSQL")
+    }
+
+    Container_Boundary(content_domain, "Домен: Контент") {
+        Component(content_service, "Content Service", "Java", "Агрегация метаданных")
+        ComponentDb(content_db, "Content DB", "PostgreSQL")
+    }
+}
+
+Rel(web, api_gateway, "Запросы", "HTTPS")
+Rel(mobile, api_gateway, "Запросы", "HTTPS")
+Rel(tv, api_gateway, "Запросы", "HTTPS")
+
+System_Ext(payment_systems, "Платежные системы")
+System_Ext(content_providers, "Провайдеры контента (Netflix, IVI)")
+System_Ext(recommendation_service, "Сервис рекомендаций")
+
+Rel(legacy_app, payment_systems, "Синхронные вызовы", "REST")
+Rel(legacy_app, content_providers, "Загрузка метаданных", "API")
+Rel(legacy_app, recommendation_service, "Запрос рекомендаций", "gRPC")
+
+Rel(billing_service, payment_systems, "Асинхронные платежи", "Kafka")
+Rel(content_service, content_providers, "Синхронизация контента", "Kafka")
+Rel(content_service, recommendation_service, "Запрос рекомендаций", "gRPC")
+
+Rel(api_gateway, legacy_app, "Постепенная миграция", "HTTP")
+Rel(api_gateway, auth_service, "Перенесённый функционал", "gRPC")
+Rel(api_gateway, billing_service, "Перенесённый функционал", "gRPC")
+Rel(api_gateway, content_service, "Перенесённый функционал", "gRPC")
+
+
+@enduml
