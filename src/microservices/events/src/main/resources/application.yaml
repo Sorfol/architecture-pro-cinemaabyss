@@ -12,6 +12,10 @@ spring:
       properties:
         spring.json.add.type.headers: false
         spring.json.value.default.type: org.example.model.PaymentEvent
+        spring.json.type.mapping: |
+          movieEvent:org.example.model.MovieEvent,
+          paymentEvent:org.example.model.PaymentEvent,
+          userEvent:org.example.model.UserEvent
     consumer:
       group-id: event-group
       auto-offset-reset: earliest

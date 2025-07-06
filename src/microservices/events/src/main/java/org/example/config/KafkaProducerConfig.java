@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaConfig {
+public class KafkaProducerConfig {
 
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
@@ -22,10 +22,11 @@ public class KafkaConfig {
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         config.put(JsonSerializer.TYPE_MAPPINGS,
+                "movieEvent:org.example.model.MovieEvent," +
                 "paymentEvent:org.example.model.PaymentEvent," +
-                        "userEvent:org.example.model.UserEvent," +
-                        "movieEvent:org.example.model.MovieEvent");
-        return new DefaultKafkaProducerFactory<>(config);
+                "userEvent:org.example.model.UserEvent");
+
+        return new DefaultKafkaProducerFactory<>(config, new StringSerializer(), new JsonSerializer<>());
     }
 
     @Bean

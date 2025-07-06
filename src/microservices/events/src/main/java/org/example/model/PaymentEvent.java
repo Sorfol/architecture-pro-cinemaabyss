@@ -1,19 +1,17 @@
 package org.example.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaymentEvent {
-    private final String paymentId;
-    private final String amount;
+    @JsonProperty("paymentId")
+    private String paymentId;
 
-    @JsonCreator
-    public PaymentEvent(@JsonProperty("paymentId") String paymentId,
-                      @JsonProperty("amount") String amount) {
-        this.paymentId = paymentId;
-        this.amount = amount;
-    }
-
+    @JsonProperty("amount")
+    private String amount;
 }
